@@ -7,24 +7,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="clr-namespace:VideoDuplicateFinderWindows.MVVM"
     xmlns:properties="clr-namespace:VideoDuplicateFinder.Windows.Properties"
-    MinHeight="100"
+    MinHeight="50"
     d:Background="Silver"
-    d:DesignHeight="100"
+    d:DesignHeight="50"
     d:DesignWidth="300"
     mc:Ignorable="d">
     <UserControl.Resources>
         <mvvm:InvertBooleanToVisibilityConverter x:Key="InvertBooleanToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-    <Grid Margin="10">
+    <Grid Margin="0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="250" />
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="75" />
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
         <mah:ToggleSwitch
@@ -34,13 +35,15 @@
             VerticalAlignment="Center"
             IsOn="{Binding Checked, UpdateSourceTrigger=PropertyChanged}"
             OffContent=""
-            OnContent="" />
+            OnContent=""
+            Margin="10,0,0,0" />
 
         <Image
             Grid.Column="1"
-            Margin="10,0,0,0"
+            Margin="10,2,0,2"
             MouseLeftButtonDown="Image_MouseLeftButtonDown"
-            Source="{Binding Thumbnail}">
+            Source="{Binding Thumbnail}"
+            VerticalAlignment="Top">
             <Image.ToolTip>
                 <ToolTip Background="Black" DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
                     <Border>
@@ -57,14 +60,19 @@
             </Image.ToolTip>
         </Image>
 
-
         <TextBlock
             Grid.Column="2"
-            Margin="10"
-            Text="{Binding Path}"
+            Margin="10,0,0,0"
+            Text="{Binding Folder}"
             TextWrapping="Wrap" />
 
-        <Grid Grid.Column="3" Visibility="{Binding IsImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <TextBlock
+            Grid.Column="3"
+            Margin="10,0,0,0"
+            Text="{Binding Name}"
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Column="4" Visibility="{Binding IsImage, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -72,13 +80,13 @@
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding Format}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.FileFormat}" />
             <TextBlock
                 Grid.Row="1"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding FrameSize}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.Resolution}">
@@ -97,7 +105,7 @@
             </TextBlock>
             <TextBlock
                 Grid.Row="2"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding Size}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.FileSize}">
@@ -116,7 +124,7 @@
             </TextBlock>
         </Grid>
 
-        <Grid Grid.Column="3" Visibility="{Binding IsImage, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+        <Grid Grid.Column="4" Visibility="{Binding IsImage, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -124,7 +132,7 @@
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding Duration, StringFormat='{}{0:hh\\:mm\\:ss}'}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.Duration}">
@@ -143,7 +151,7 @@
             </TextBlock>
             <TextBlock
                 Grid.Row="1"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding FrameSize}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.Resolution}">
@@ -162,7 +170,7 @@
             </TextBlock>
             <TextBlock
                 Grid.Row="2"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding Size}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.FileSize}">
@@ -181,7 +189,7 @@
             </TextBlock>
 
         </Grid>
-        <Grid Grid.Column="4" Visibility="{Binding IsImage, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+        <Grid Grid.Column="5" Visibility="{Binding IsImage, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -189,19 +197,19 @@
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding Format}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.VideoFormat}" />
             <TextBlock
                 Grid.Row="1"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding Fps, StringFormat={}{0} fps}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.FramesPerSecond}" />
             <TextBlock
                 Grid.Row="2"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding BitRateKbs, StringFormat={}{0} kbps}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.BitRate}">
@@ -220,7 +228,7 @@
             </TextBlock>
         </Grid>
 
-        <Grid Grid.Column="5" Visibility="{Binding IsImage, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+        <Grid Grid.Column="6" Visibility="{Binding IsImage, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -228,41 +236,47 @@
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding AudioFormat}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.AudioFormat}" />
             <TextBlock
                 Grid.Row="1"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding AudioChannel}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.AudioChannel}" />
             <TextBlock
                 Grid.Row="2"
-                Margin="2"
+                Margin="10,0,0,0"
                 Text="{Binding AudioSampleRate}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.AudioSampleRate}" />
         </Grid>
 
-        <Grid Grid.Column="6">
+        <Grid Grid.Column="7">
             <Grid.RowDefinitions>
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
-                Margin="10"
+                Margin="10,0,0,0"
                 Text="{Binding Similarity, StringFormat={}{0:F2}%}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.Similarity}" />
             <TextBlock
                 Grid.Row="1"
-                Margin="10"
+                Margin="10,0,0,0"
                 Text="{Binding DateCreated}"
                 TextWrapping="Wrap"
                 ToolTip="{x:Static properties:Resources.CreationDate}" />
+            <TextBlock
+                Grid.Row="2"
+                Margin="10,0,0,0"
+                Text=""
+                TextWrapping="Wrap" />
         </Grid>
     </Grid>
 </UserControl>

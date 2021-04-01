@@ -9,6 +9,7 @@ namespace VideoDuplicateFinderWindows.Data {
 	public class DuplicateItemViewModel : ViewModelBase, IEquatable<DuplicateItemViewModel> {
 		public DuplicateItemViewModel(DuplicateFinderEngine.Data.DuplicateItem file) {
 			Path = file.Path;
+			Name = file.Name;
 			Folder = file.Folder;
 			Duration = file.Duration;
 			Thumbnail = Utils.JoinImages(file.Thumbnail) ?? new BitmapImage();
@@ -40,6 +41,9 @@ namespace VideoDuplicateFinderWindows.Data {
 		}
 
 		[DisplayName("Path")] public string Path { get; private set; }
+
+		[DisplayName("Name")]
+		public string Name { get; }
 
 		public BitmapImage Thumbnail { get; set; }
 

@@ -193,8 +193,11 @@ namespace VideoDuplicateFinderWindows {
 		private bool TextFilter(object obj) {
 			if (!(obj is DuplicateItemViewModel data)) return false;
 			var success = true;
-			if (!string.IsNullOrEmpty(FilterByPath))
-				success = data.Path.Contains(FilterByPath, StringComparison.OrdinalIgnoreCase);
+			if (!string.IsNullOrEmpty(FilterByPath)) {
+				// success = data.Path.Contains(FilterByPath, StringComparison.OrdinalIgnoreCase);
+				var groupDuplicates = Scanner.Duplicates.Where(a => a.GroupId == data.GroupId && a.Path.Contains(FilterByPath, StringComparison.OrdinalIgnoreCase)).Count();
+				success = groupDuplicates > 0;
+			}
 			if (success && FileType != FileTypeFilter.All)
 				success = FileType == FileTypeFilter.Images ? data.IsImage : !data.IsImage;
 			return success;

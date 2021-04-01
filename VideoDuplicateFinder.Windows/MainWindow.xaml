@@ -552,7 +552,7 @@
                                     <StatusBar Grid.Row="3">
                                         <StatusBarItem>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Margin="0,0,5,0" Text="Zoom" />
+                                                <TextBlock Margin="5,4,0,0" Text="Zoom" />
                                                 <Slider
                                                     x:Name="ZoomSlider"
                                                     MinWidth="100"
@@ -560,10 +560,18 @@
                                                     Maximum="4.0"
                                                     Minimum="0.5"
                                                     Orientation="Horizontal"
-                                                    SmallChange="0.1"
-                                                    Value="1.0" />
+                                                    SmallChange="0.05"
+                                                    Value="1.0"
+                                                    Margin="5,0,5,0"
+                                                    IsSnapToTickEnabled="True"
+                                                    TickFrequency=".05"
+                                                    />
+                                                <TextBlock
+                                                    Margin="0,4,5,0"
+                                                    Text="{Binding ElementName=ZoomSlider, Path=Value, StringFormat=P0}" />
                                             </StackPanel>
                                         </StatusBarItem>
+                                        <Separator />
                                         <StatusBarItem Content="{x:Static properties:Resources.DuplicatesInList}" />
                                         <StatusBarItem Content="{Binding Duplicates.Count}" />
                                         <Separator />
