@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -248,6 +248,9 @@
   </data>
   <data name="Path" xml:space="preserve">
     <value>Path:</value>
+  </data>
+  <data name="CondenseList" xml:space="preserve">
+    <value>Condense List</value>
   </data>
   <data name="ClearSelection" xml:space="preserve">
     <value>Clear Selection</value>

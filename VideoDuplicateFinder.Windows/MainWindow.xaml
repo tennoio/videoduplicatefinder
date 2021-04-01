@@ -446,6 +446,12 @@
                                                 </StackPanel>
                                             </MenuItem.Header>
                                         </MenuItem>
+                                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                                        <CheckBox
+                                            Margin="5,5,0,0"
+                                            VerticalAlignment="Center"
+                                            Content="{x:Static properties:Resources.CondenseList}"
+                                            IsChecked="{Binding CondenseList}" />
                                     </Menu>
                                     <StackPanel
                                         Grid.Row="1"

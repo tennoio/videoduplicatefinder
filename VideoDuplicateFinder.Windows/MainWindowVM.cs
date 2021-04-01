@@ -325,6 +325,15 @@ namespace VideoDuplicateFinderWindows {
 				OnPropertyChanged(nameof(IgnoreReadOnlyFolders));
 			}
 		}
+		bool _CondenseList;
+		public bool CondenseList {
+			get => _CondenseList;
+			set {
+				if (value == _CondenseList) return;
+				_CondenseList = value;
+				OnPropertyChanged(nameof(CondenseList));
+			}
+		}
 		public byte Threshhold {
 			get => Scanner.Settings.Threshhold;
 			set {

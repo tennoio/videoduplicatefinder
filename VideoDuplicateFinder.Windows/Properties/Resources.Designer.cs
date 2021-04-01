@@ -160,6 +160,15 @@ namespace VideoDuplicateFinder.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Condense List.
+        /// </summary>
+        public static string CondenseList {
+            get {
+                return ResourceManager.GetString("CondenseList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string Confirmation {
