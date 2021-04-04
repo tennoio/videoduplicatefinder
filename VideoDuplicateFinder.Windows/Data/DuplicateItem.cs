@@ -9,7 +9,6 @@ namespace VideoDuplicateFinderWindows.Data {
 	public class DuplicateItemViewModel : ViewModelBase, IEquatable<DuplicateItemViewModel> {
 		public DuplicateItemViewModel(DuplicateFinderEngine.Data.DuplicateItem file) {
 			Path = file.Path;
-			Name = file.Name;
 			Folder = file.Folder;
 			Duration = file.Duration;
 			Thumbnail = Utils.JoinImages(file.Thumbnail) ?? new BitmapImage();
@@ -42,8 +41,15 @@ namespace VideoDuplicateFinderWindows.Data {
 
 		[DisplayName("Path")] public string Path { get; private set; }
 
-		[DisplayName("Name")]
-		public string Name { get; }
+		string _Name;
+		public string Name {
+			get => _Name;
+			set {
+				if (value == _Name) return;
+				_Name = value;
+				OnPropertyChanged(nameof(Name));
+			}
+		}
 
 		public BitmapImage Thumbnail { get; set; }
 
@@ -104,6 +110,26 @@ namespace VideoDuplicateFinderWindows.Data {
 				if (value == _FrameSizeBest) return;
 				_FrameSizeBest = value;
 				OnPropertyChanged(nameof(FrameSizeBest));
+			}
+		}
+
+		float _ResolutionDifferenceBest;
+		public float ResolutionDifferenceBest {
+			get => _ResolutionDifferenceBest;
+			set {
+				if (value == _ResolutionDifferenceBest) return;
+				_ResolutionDifferenceBest = value;
+				OnPropertyChanged(nameof(ResolutionDifferenceBest));
+			}
+		}
+
+		int _DuplicatesInGroup;
+		public int DuplicatesInGroup {
+			get => _DuplicatesInGroup;
+			set {
+				if (value == _DuplicatesInGroup) return;
+				_DuplicatesInGroup = value;
+				OnPropertyChanged(nameof(DuplicatesInGroup));
 			}
 		}
 

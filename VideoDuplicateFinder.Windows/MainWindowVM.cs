@@ -42,6 +42,12 @@ namespace VideoDuplicateFinderWindows {
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DurationDescending, new SortDescription(nameof(DuplicateItemViewModel.Duration), ListSortDirection.Descending)),
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DateCreatedAscending, new SortDescription(nameof(DuplicateItemViewModel.DateCreated), ListSortDirection.Ascending)),
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DateCreatedDescending, new SortDescription(nameof(DuplicateItemViewModel.DateCreated), ListSortDirection.Descending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_SimilarityAscending, new SortDescription(nameof(DuplicateItemViewModel.Similarity), ListSortDirection.Ascending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_SimilarityDescending, new SortDescription(nameof(DuplicateItemViewModel.Similarity), ListSortDirection.Descending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_ResolutionDifferenceAscending, new SortDescription(nameof(DuplicateItemViewModel.ResolutionDifferenceBest), ListSortDirection.Ascending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_ResolutionDifferenceDescending, new SortDescription(nameof(DuplicateItemViewModel.ResolutionDifferenceBest), ListSortDirection.Descending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DuplicatesInGroupAscending, new SortDescription(nameof(DuplicateItemViewModel.DuplicatesInGroup), ListSortDirection.Ascending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DuplicatesInGroupDescending, new SortDescription(nameof(DuplicateItemViewModel.DuplicatesInGroup), ListSortDirection.Descending)),
 		};
 		public KeyValuePair<string, FileTypeFilter>[] TypeFilters { get; } = {
 			new KeyValuePair<string, FileTypeFilter>(VideoDuplicateFinder.Windows.Properties.Resources.FileTypeFilter_All,  FileTypeFilter.All),
@@ -115,14 +121,16 @@ namespace VideoDuplicateFinderWindows {
 		}
 
 		string _FilterByPath;
-
+		readonly Utils.DebounceDispatcher debounceTimer = new();
 		public string FilterByPath {
 			get => _FilterByPath;
 			set {
 				if (value == FilterByPath) return;
 				_FilterByPath = value;
 				OnPropertyChanged(nameof(FilterByPath));
-				view.Refresh();
+				debounceTimer.Debounce(500, parm => {
+					view.Refresh();
+				});
 			}
 		}
 		public MainWindowVM() {
@@ -159,15 +167,38 @@ namespace VideoDuplicateFinderWindows {
 			TotalGroups = Scanner.Duplicates.GroupBy(a => a.GroupId).Count();
 			TotalSize = Scanner.Duplicates.Sum(a => a.SizeLong);
 			TotalDuplicates = Scanner.Duplicates.Count;
+			
+			// cache for calculated resolution differences
+			var resolutionDifferenceBestByGroupId = new Dictionary<Guid, float>();
+
 			//Adding duplicates to view
 			foreach (var itm in Scanner.Duplicates) {
 				var dup = new DuplicateItemViewModel(itm);
+				var fi = new FileInfo(dup.Path);
+				dup.Name = fi.Name;
 				//Set best property in duplicate group
 				var others = Scanner.Duplicates.Where(a => a.GroupId == dup.GroupId && a.Path != dup.Path).ToList();
 				dup.SizeBest = !others.Any(a => a.SizeLong < dup.SizeLong);
 				dup.FrameSizeBest = !others.Any(a => a.FrameSizeInt > dup.FrameSizeInt);
 				dup.DurationBest = !others.Any(a => a.Duration > dup.Duration);
 				dup.BitrateBest = !others.Any(a => a.BitRateKbs > dup.BitRateKbs);
+				dup.DuplicatesInGroup = others.Count;
+				// only calculate once per group and store in cache
+				if (!resolutionDifferenceBestByGroupId.ContainsKey(dup.GroupId)) {
+					resolutionDifferenceBestByGroupId.Add(dup.GroupId, others.Max(comp => {
+						var arr1 = comp.FrameSize.Split("x");
+						var arr2 = dup.FrameSize.Split("x");
+						var a = Convert.ToSingle(Convert.ToInt32(arr1[0], 10));
+						var b = Convert.ToSingle(Convert.ToInt32(arr2[0], 10));
+						var c = Convert.ToSingle(Convert.ToInt32(arr1[1], 10));
+						var d = Convert.ToSingle(Convert.ToInt32(arr1[1], 10));
+						return (
+							(a > b ? a / b : b / a) +
+							(c > d ? c / d : d / c)
+						) / 2;
+					}));
+				}
+				dup.ResolutionDifferenceBest = resolutionDifferenceBestByGroupId[dup.GroupId];
 				Duplicates.Add(dup);
 			}
 			//Group results by GroupID
@@ -194,7 +225,6 @@ namespace VideoDuplicateFinderWindows {
 			if (!(obj is DuplicateItemViewModel data)) return false;
 			var success = true;
 			if (!string.IsNullOrEmpty(FilterByPath)) {
-				// success = data.Path.Contains(FilterByPath, StringComparison.OrdinalIgnoreCase);
 				var groupDuplicates = Scanner.Duplicates.Where(a => a.GroupId == data.GroupId && a.Path.Contains(FilterByPath, StringComparison.OrdinalIgnoreCase)).Count();
 				success = groupDuplicates > 0;
 			}
@@ -323,15 +353,6 @@ namespace VideoDuplicateFinderWindows {
 				if (value == Scanner.Settings.IgnoreReadOnlyFolders) return;
 				Scanner.Settings.IgnoreReadOnlyFolders = value;
 				OnPropertyChanged(nameof(IgnoreReadOnlyFolders));
-			}
-		}
-		bool _CondenseList;
-		public bool CondenseList {
-			get => _CondenseList;
-			set {
-				if (value == _CondenseList) return;
-				_CondenseList = value;
-				OnPropertyChanged(nameof(CondenseList));
 			}
 		}
 		public byte Threshhold {

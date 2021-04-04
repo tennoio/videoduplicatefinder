@@ -8,7 +8,6 @@ namespace DuplicateFinderEngine.Data {
 	public class DuplicateItem {
 		public DuplicateItem(FileEntry file, float percent) {
 			Path = file.Path;
-			Name = file.Name;
 			Folder = file.Folder;
 			if (!file.IsImage && file.mediaInfo?.Streams != null) {
 				Duration = file.mediaInfo.Duration;
@@ -53,8 +52,6 @@ namespace DuplicateFinderEngine.Data {
 		public List<Image> Thumbnail { get; set; } = new List<Image>();
 		[DisplayName("Path")]
 		public string Path { get; }
-		[DisplayName("Name")]
-		public string Name { get; }
 		public long SizeLong { get; }
 		[DisplayName("Size")]
 		public string Size { get; }

@@ -32,7 +32,6 @@ namespace DuplicateFinderEngine.Data {
 		public FileEntry(string file) {
 			Path = file;
 			var fi = new System.IO.FileInfo(file);
-			Name = fi.Name;
 			Folder = fi.Directory?.FullName ?? string.Empty;
 			var extension = fi.Extension;
 			IsImage = FileHelper.ImageExtensions.Any(x => extension.EndsWith(x, StringComparison.OrdinalIgnoreCase));
@@ -40,14 +39,12 @@ namespace DuplicateFinderEngine.Data {
 		[ProtoMember(1)]
 		public string Path { get; set; }
 		[ProtoMember(2)]
-		public string Name;
-		[ProtoMember(3)]
 		public string Folder;
-		[ProtoMember(4)]
+		[ProtoMember(3)]
 		public List<byte[]>? grayBytes;
-		[ProtoMember(5)]
+		[ProtoMember(4)]
 		public MediaInfo? mediaInfo;
-		[ProtoMember(6)]
+		[ProtoMember(5)]
 		public EntryFlags Flags;
 
 		public bool IsImage {

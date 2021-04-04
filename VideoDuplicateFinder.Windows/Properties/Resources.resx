@@ -249,9 +249,6 @@
   <data name="Path" xml:space="preserve">
     <value>Path:</value>
   </data>
-  <data name="CondenseList" xml:space="preserve">
-    <value>Condense List</value>
-  </data>
   <data name="ClearSelection" xml:space="preserve">
     <value>Clear Selection</value>
   </data>
@@ -299,6 +296,24 @@
   </data>
   <data name="Sort_None" xml:space="preserve">
     <value>None</value>
+  </data>
+  <data name="Sort_ResolutionDifferenceAscending" xml:space="preserve">
+    <value>Resolution Difference Ascending</value>
+  </data>
+  <data name="Sort_ResolutionDifferenceDescending" xml:space="preserve">
+    <value>Resolution Difference Descending</value>
+  </data>
+  <data name="Sort_DuplicatesInGroupAscending" xml:space="preserve">
+    <value>Duplicates In Group Ascending</value>
+  </data>
+  <data name="Sort_DuplicatesInGroupDescending" xml:space="preserve">
+    <value>Duplicates In Group Descending</value>
+  </data>
+  <data name="Sort_SimilarityAscending" xml:space="preserve">
+    <value>Similarity Ascending</value>
+  </data>
+  <data name="Sort_SimilarityDescending" xml:space="preserve">
+    <value>Similarity Descending</value>
   </data>
   <data name="Sort" xml:space="preserve">
     <value>Sort</value>
