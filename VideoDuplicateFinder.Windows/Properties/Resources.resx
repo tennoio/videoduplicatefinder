@@ -414,4 +414,7 @@
   <data name="CreationDate" xml:space="preserve">
     <value>Creation Date</value>
   </data>
+  <data name="ResolutionDifference" xml:space="preserve">
+    <value>Resolution difference</value>
+  </data>
 </root>

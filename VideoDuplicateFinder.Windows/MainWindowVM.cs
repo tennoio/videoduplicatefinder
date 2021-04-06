@@ -44,8 +44,8 @@ namespace VideoDuplicateFinderWindows {
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DateCreatedDescending, new SortDescription(nameof(DuplicateItemViewModel.DateCreated), ListSortDirection.Descending)),
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_SimilarityAscending, new SortDescription(nameof(DuplicateItemViewModel.Similarity), ListSortDirection.Ascending)),
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_SimilarityDescending, new SortDescription(nameof(DuplicateItemViewModel.Similarity), ListSortDirection.Descending)),
-			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_ResolutionDifferenceAscending, new SortDescription(nameof(DuplicateItemViewModel.ResolutionDifferenceBest), ListSortDirection.Ascending)),
-			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_ResolutionDifferenceDescending, new SortDescription(nameof(DuplicateItemViewModel.ResolutionDifferenceBest), ListSortDirection.Descending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_ResolutionDifferenceAscending, new SortDescription(nameof(DuplicateItemViewModel.ResolutionDifference), ListSortDirection.Ascending)),
+			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_ResolutionDifferenceDescending, new SortDescription(nameof(DuplicateItemViewModel.ResolutionDifference), ListSortDirection.Descending)),
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DuplicatesInGroupAscending, new SortDescription(nameof(DuplicateItemViewModel.DuplicatesInGroup), ListSortDirection.Ascending)),
 			new KeyValuePair<string, SortDescription>(VideoDuplicateFinder.Windows.Properties.Resources.Sort_DuplicatesInGroupDescending, new SortDescription(nameof(DuplicateItemViewModel.DuplicatesInGroup), ListSortDirection.Descending)),
 		};
@@ -168,9 +168,6 @@ namespace VideoDuplicateFinderWindows {
 			TotalSize = Scanner.Duplicates.Sum(a => a.SizeLong);
 			TotalDuplicates = Scanner.Duplicates.Count;
 			
-			// cache for calculated resolution differences
-			var resolutionDifferenceBestByGroupId = new Dictionary<Guid, float>();
-
 			//Adding duplicates to view
 			foreach (var itm in Scanner.Duplicates) {
 				var dup = new DuplicateItemViewModel(itm);
@@ -179,26 +176,31 @@ namespace VideoDuplicateFinderWindows {
 				//Set best property in duplicate group
 				var others = Scanner.Duplicates.Where(a => a.GroupId == dup.GroupId && a.Path != dup.Path).ToList();
 				dup.SizeBest = !others.Any(a => a.SizeLong < dup.SizeLong);
+				var frameSizeIntBest = others.Max(a => a.FrameSizeInt);
+				if (dup.FrameSizeInt >= frameSizeIntBest) dup.FrameSizeBest = true;
 				dup.FrameSizeBest = !others.Any(a => a.FrameSizeInt > dup.FrameSizeInt);
 				dup.DurationBest = !others.Any(a => a.Duration > dup.Duration);
 				dup.BitrateBest = !others.Any(a => a.BitRateKbs > dup.BitRateKbs);
 				dup.DuplicatesInGroup = others.Count;
-				// only calculate once per group and store in cache
-				if (!resolutionDifferenceBestByGroupId.ContainsKey(dup.GroupId)) {
-					resolutionDifferenceBestByGroupId.Add(dup.GroupId, others.Max(comp => {
+				if (dup.FrameSizeBest) {
+					dup.ResolutionDifference = 1;
+					dup.ResolutionDifferenceBest = true;
+				} else {
+					// find biggest in group
+					float frameSizeBiggestX = 0;
+					float frameSizeBiggestY = 0;
+					others.ForEach(comp => {
 						var arr1 = comp.FrameSize.Split("x");
-						var arr2 = dup.FrameSize.Split("x");
-						var a = Convert.ToSingle(Convert.ToInt32(arr1[0], 10));
-						var b = Convert.ToSingle(Convert.ToInt32(arr2[0], 10));
-						var c = Convert.ToSingle(Convert.ToInt32(arr1[1], 10));
-						var d = Convert.ToSingle(Convert.ToInt32(arr1[1], 10));
-						return (
-							(a > b ? a / b : b / a) +
-							(c > d ? c / d : d / c)
-						) / 2;
-					}));
+						frameSizeBiggestX = Math.Max(frameSizeBiggestX, Convert.ToSingle(Convert.ToInt32(arr1[0], 10)));
+						frameSizeBiggestY = Math.Max(frameSizeBiggestY, Convert.ToSingle(Convert.ToInt32(arr1[1], 10)));
+					});
+					// find dup size and calc difference
+					var arr2 = dup.FrameSize.Split("x");
+					var x = Convert.ToSingle(Convert.ToInt32(arr2[0], 10));
+					var y = Convert.ToSingle(Convert.ToInt32(arr2[1], 10));
+					dup.ResolutionDifference = (x / frameSizeBiggestX + y / frameSizeBiggestY) / 2;
+					dup.ResolutionDifferenceBest = false;
 				}
-				dup.ResolutionDifferenceBest = resolutionDifferenceBestByGroupId[dup.GroupId];
 				Duplicates.Add(dup);
 			}
 			//Group results by GroupID

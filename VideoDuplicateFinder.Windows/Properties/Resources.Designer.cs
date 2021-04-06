@@ -619,6 +619,15 @@ namespace VideoDuplicateFinder.Windows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resolution difference.
+        /// </summary>
+        public static string ResolutionDifference {
+            get {
+                return ResourceManager.GetString("ResolutionDifference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resume.
         /// </summary>
         public static string Resume {

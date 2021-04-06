@@ -113,8 +113,18 @@ namespace VideoDuplicateFinderWindows.Data {
 			}
 		}
 
-		float _ResolutionDifferenceBest;
-		public float ResolutionDifferenceBest {
+		float _ResolutionDifference;
+		public float ResolutionDifference {
+			get => _ResolutionDifference;
+			set {
+				if (value == _ResolutionDifference) return;
+				_ResolutionDifference = value;
+				OnPropertyChanged(nameof(ResolutionDifference));
+			}
+		}
+
+		bool _ResolutionDifferenceBest;
+		public bool ResolutionDifferenceBest {
 			get => _ResolutionDifferenceBest;
 			set {
 				if (value == _ResolutionDifferenceBest) return;

@@ -500,7 +500,7 @@
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate>
-                                                                        <Expander IsExpanded="True">
+                                                                        <Expander IsExpanded="True" Padding="0">
                                                                             <Expander.Header>
                                                                                 <StackPanel Orientation="Horizontal">
                                                                                     <Label Content="{Binding ItemCount}" ContentStringFormat="Duplicate Group - {0} items" />
@@ -517,7 +517,7 @@
                                             </ListView.GroupStyle>
                                             <ListView.Resources>
                                                 <DataTemplate DataType="{x:Type ContentData:DuplicateItemViewModel}">
-                                                    <viewModels:DuplicateViewModel HorizontalContentAlignment="Stretch" />
+                                                    <viewModels:DuplicateViewModel HorizontalContentAlignment="Stretch" Padding="0" />
                                                 </DataTemplate>
                                             </ListView.Resources>
                                             <ListView.ContextMenu>
